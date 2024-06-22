@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ListGPT - Product Listing Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>ListGPT - Product Listing Generator</h1>
+    <label for="productName">产品名称:</label>
+    <input type="text" id="productName"><br>
+    
+    <label for="brand">品牌:</label>
+    <input type="text" id="brand"><br>
+    
+    <label for="material">材质:</label>
+    <input type="text" id="material"><br>
+    
+    <label for="colors">颜色列表:</label>
+    <input type="text" id="colors" placeholder="以逗号分隔"><br>
+    
+    <button id="generate">生成</button>
+    
+    <h2>生成结果:</h2>
+    <div id="result"></div>
+    
+    <script>
+        $('#generate').click(function() {
+            var productName = $('#productName').val();
+            var brand = $('#brand').val();
+            var material = $('#material').val();
+            var colors = $('#colors').val();
+            
+            var prompt = `生成以下内容:
+            1. 标题格式: \`COOWEEK Magnetic for ${productName} [Compatible with MagSafe][Frosted PC Case][Wave Textured] - Full Camera Protection Phone Case (6.7 inches), [颜色]\`
+            2. 要点: 提供5个主要特征的要点
+            3. 产品描述: 简短的1-2行描述
+            4. 附加属性:
+               - Additional Features: Full Camera Protection, Wave Textured Design, Magnetic Ring Compatible with MagSafe, Skin-Like Touch, Metallic Matte Coating, Fingerprint Resistance, Four-Layer Shockproof Protection, Reserved Disassembly Hole, Sensitive Buttons, Anti-Dust Design
+               - Enclosure Material: Frosted PC (Polycarbonate)
+               - Form Factor: Shell Case
+               - Package Dimensions: 7 x 4 x 0.5 inches
+               - Package Weight: 1.5 oz (42 g)
+               - Item Dimensions: 6.7 x 3.5 x 0.4 inches
+               - Price: $19.99
+               - Style: Wave Textured Frosted PC Case
+               - Theme: Elegant
+               - Keyword Theme: iPhone 15 Pro Max case, Cooweek case, Magnetic case, MagSafe compatible, Frosted PC, Wave textured, Full camera protection, Ultra-light, Ultra-thin, Metallic matte coating, Shockproof, Fingerprint resistant, Skin-like touch, Stylish case, Anti-dust, for women, ladies, girls, elegant
+            颜色列表: ${colors}`;
+
+            $.ajax({
+                url: 'https://api.openai.com/v1/completions',
+                type: 'POST',
+                headers: {
+                    'Authorization': `Bearer YOUR_API_KEY`,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    model: 'text-davinci-003',
+                    prompt: prompt,
+                    max_tokens: 1000
+                }),
+                success: function(response) {
+                    $('#result').text(response.choices[0].text.trim());
+                },
+                error: function(error) {
+                    $('#result').text('Error: ' + error.responseText);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
